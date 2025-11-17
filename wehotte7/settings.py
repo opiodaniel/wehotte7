@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third-party 
     'rest_framework',
+    'django_filters',
+
+    # app
     'blog',
 ]
 
@@ -69,7 +74,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'wehotte7.wsgi.application'
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ]
+}
+
+
+ASGI_APPLICATION = 'wehotte7.asgi.application'
 
 
 # Database
