@@ -7,6 +7,9 @@ from django.contrib.auth import get_user_model
 from .permissions import IsOwnerOrReadOnly
 from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
@@ -27,7 +30,28 @@ class PostViewSet(viewsets.ModelViewSet):
 
     # Automatically attach the logged-in user as owner
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)        
+        serializer.save(owner=self.request.user) 
+
+    @action(detail=True, methods=['get', 'post'], url_path="comments")
+    def comments(self, request, pk=None):
+        post = self.get_object()
+
+        if request.method == "GET":
+            comments = post.comments.all()
+            serializer = CommentSerializer(comments, many=True)
+            return Response(serializer.data)
+
+        if request.method == "POST":
+            serializer = CommentSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(
+                    post=post,
+                    author=request.user
+                )
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+           
 
 
 
