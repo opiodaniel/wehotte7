@@ -5,7 +5,13 @@ from .models import Post, Comment
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
+    likes_count = serializers.IntegerField(source="likes.count", read_only=True)
+
     '''
+
+    Why use source="likes.count"?
+
+    This automatically counts the related likes via the related_name="likes" from the model.
 
     owner = serializers.ReadOnlyField(source='owner.username')
 
@@ -29,7 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'owner', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'content', 'owner', 'created_at', 'updated_at', 'likes_count']
 
 
 
@@ -61,6 +67,4 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'post', 'author', 'content', 'created_at']
         read_only_fields = ['post','author']
-
-
-
+        
