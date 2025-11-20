@@ -6,6 +6,7 @@ class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
     likes_count = serializers.IntegerField(source="likes.count", read_only=True)
+    image = serializers.ImageField(required=False, allow_null=True)
 
     '''
 
@@ -35,7 +36,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'owner', 'created_at', 'updated_at', 'likes_count']
+        fields = ['id', 'title', 'content', 'image', 'owner', 'created_at', 'updated_at', 'likes_count']
 
 
 
