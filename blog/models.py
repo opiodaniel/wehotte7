@@ -41,3 +41,15 @@ class PostLike(models.Model):
 
     def __str__(self):
         return f"{self.user} liked {self.post}"
+
+
+class CommentLike(models.Model):
+    comment = models.ForeignKey(Comment, related_name="likes", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['comment', 'user']  # Prevent double-likes
+
+    def __str__(self):
+        return f"{self.user} liked {self.comment}"

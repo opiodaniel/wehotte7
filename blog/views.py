@@ -1,5 +1,5 @@
 
-from .models import Post, Comment, PostLike
+from .models import Post, Comment, PostLike, CommentLike
 from .serializers import PostSerializer
 from rest_framework import generics
 from .serializers import RegisterSerializer, CommentSerializer
@@ -95,3 +95,21 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        comment = self.get_object()
+        user = request.user
+
+        # Check if user already liked the comment
+        liked = CommentLike.objects.filter(comment=comment, user=user).first()
+
+        if liked:
+            # Unlike
+            liked.delete()
+            return Response({"message": "Unliked"}, status=status.HTTP_200_OK)
+
+        # Like
+        CommentLike.objects.create(comment=comment, user=user)
+        return Response({"message": "Liked"}, status=status.HTTP_201_CREATED)            
