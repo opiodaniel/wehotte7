@@ -66,6 +66,13 @@ class CommentSerializer(serializers.ModelSerializer):
 
     likes_count = serializers.IntegerField(source="likes.count", read_only=True)
 
+    '''
+      
+      Why use source="likes.count"?
+      This automatically counts the related likes via the related_name="likes" from the model.
+
+    '''
+
     class Meta:
         model = Comment
         fields = ['id', 'post', 'author', 'content', 'created_at', 'likes_count']
